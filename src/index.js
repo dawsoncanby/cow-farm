@@ -1,3 +1,5 @@
+import css from './main.css'
+
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { OBJLoader2 } from 'three/examples/jsm/loaders/OBJLoader2.js'
