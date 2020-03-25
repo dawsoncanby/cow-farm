@@ -28,7 +28,7 @@ light.target.position.set(-5, 0, 0)
 scene.add(light)
 scene.add(light.target)
 
-camera.position.set(0, 20, 20)
+camera.position.set(0, 10, 10)
 controls.target.set(0, 0, 0)
 controls.update()
 
