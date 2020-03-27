@@ -28,12 +28,17 @@ camera.position.set(0, 10, 10)
 controls.target.set(0, 0, 0)
 controls.update()
 
+var loadedObjs = []
+
 // instantiate a loader
 var loader = new OBJLoader2()
 var cowMaterial = new THREE.MeshToonMaterial({
-  color: '#8f5d25',    // red (can also use a CSS color string here)
+  color: '#8f5d25',
   flatShading: false,
 });
+
+
+var cowObj
 
 // load a resource
 loader.load(
@@ -41,6 +46,8 @@ loader.load(
 	cow,
 	// called when resource is loaded
 	(object) => {
+		cowObj = object;
+		loadedObjs.push(object)
 		object.traverse((e)=>{ if (e.isMesh) e.material = cowMaterial })
 		scene.add(object)
 	},
@@ -65,10 +72,46 @@ loader.load(
 	err => { console.log(err) }
 )
 
+const raycaster = new THREE.Raycaster()
+const mouse = new THREE.Vector2()
+var selectedObj = null
+
+window.addEventListener('mousemove', event => {
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+})
+
+let colors = [new THREE.Color(0xebae34), new THREE.Color(0x262626), new THREE.Color(0x8f5d25)]
+let curColIdx = 0
+window.addEventListener('click', event => {
+	if (selectedObj) {
+		curColIdx++
+		if (curColIdx >= colors.length) curColIdx = 0
+		let newColor = colors[curColIdx]
+		console.log(newColor);
+		cowMaterial.color = newColor
+		// cowMaterial.needsUpdate = true
+	}
+})
+
 function animate() {
 	requestAnimationFrame( animate )
 
+	if (cowObj) {
+		cowObj.rotateY(0.005)
+		cowObj.translateX(0.005)
+	}
+
   controls.update()
+
+	raycaster.setFromCamera(mouse, camera)
+	var intersects = raycaster.intersectObjects(loadedObjs, true)
+
+	for ( var i = 0; i < intersects.length; i++ ) {
+		selectedObj = intersects[i]
+	}
+
+	if (intersects.length === 0) selectedObj = null
 
 	renderer.render( scene, camera )
 }
