@@ -66,9 +66,8 @@ export default class Player {
 
   }
 
+  // puts the camera behind the player on the -z axis
   camFollowPlayer() {
-    this.camera.lookAt(this.modelObj.position)
-
     // compute cam location relative to model object (world coordinates)
     const followVec = new THREE.Vector3(0, 0.06, -0.1).normalize()
     const followDist = 4
@@ -83,6 +82,7 @@ export default class Player {
       0.1
     )
 
+    this.camera.lookAt(this.modelObj.position)
     this.camera.position.setX(camPos.x)
     this.camera.position.setY(camPos.y)
     this.camera.position.setZ(camPos.z)
