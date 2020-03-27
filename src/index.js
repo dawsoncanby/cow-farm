@@ -5,6 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { OBJLoader2 } from 'three/examples/jsm/loaders/OBJLoader2.js'
 
 import cow from './obj/cow.obj'
+import landscape from './obj/landscape.obj'
 
 var scene = new THREE.Scene()
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
@@ -14,11 +15,6 @@ renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
 let controls = new OrbitControls(camera, renderer.domElement)
-
-var geometry = new THREE.BoxGeometry()
-var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } )
-var cube = new THREE.Mesh(geometry, material)
-// scene.add(cube)
 
 const color = 0xFFFFFF
 const intensity = 1
@@ -34,20 +30,42 @@ controls.update()
 
 // instantiate a loader
 var loader = new OBJLoader2()
+var cowMaterial = new THREE.MeshToonMaterial({
+  color: '#8f5d25',    // red (can also use a CSS color string here)
+  flatShading: false,
+});
 
 // load a resource
 loader.load(
 	// resource URL
 	cow,
 	// called when resource is loaded
-	(object) => { scene.add(object) },
+	(object) => {
+		object.traverse((e)=>{ if (e.isMesh) e.material = cowMaterial })
+		scene.add(object)
+	},
   xhr => { },
   err => { console.log(err) }
 )
 
+loader = new OBJLoader2()
+
+var grassMaterial = new THREE.MeshToonMaterial({
+  color: '#2c9e4b',    // red (can also use a CSS color string here)
+  flatShading: false,
+});
+
+loader.load(
+	landscape,
+	o => {
+		scene.add(o)
+		o.traverse((e)=>{ if (e.isMesh) e.material = grassMaterial })
+	},
+	xhr => { },
+	err => { console.log(err) }
+)
+
 function animate() {
-  cube.rotation.x += 0.01
-  cube.rotation.y += 0.01
 	requestAnimationFrame( animate )
 
   controls.update()
