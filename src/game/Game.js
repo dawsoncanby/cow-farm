@@ -30,31 +30,6 @@ export default class Game {
     this.cow = this.loadedRes.cow.clone(true)
     this.cow2 = this.loadedRes.cow.clone(true)
 
-    // TODO: refactor this so mats are dynamic
-
-    // cow mat 1
-    let cowMaterial = new THREE.MeshToonMaterial({
-      color: '#8f5d25',
-      flatShading: false,
-    });
-    this.cow.traverse((e)=>{ if (e.isMesh) e.material = cowMaterial })
-
-    // cow mat 2
-    let cowMaterial2 = new THREE.MeshToonMaterial({
-      color: '#eee',
-      flatShading: false,
-    });
-    this.cow2.traverse((e)=>{ if (e.isMesh) e.material = cowMaterial2 })
-
-    // land mat
-    let landMat = new THREE.MeshToonMaterial({
-      color: '#24a113',
-      flatShading: false,
-    });
-    this.loadedRes.landscape.traverse((e)=>{ if (e.isMesh) e.material = landMat})
-
-
-
     this.scene.add(this.cow)
     this.scene.add(this.cow2)
     this.scene.add(this.loadedRes.landscape.clone(true))

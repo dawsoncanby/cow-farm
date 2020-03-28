@@ -23,7 +23,6 @@ export default class Player {
   // get and apply movement for the player based on input
   // TODO: maybe split this into two methods
   move(delta, keysDown) {
-
     const rotRate = 1.5
     const speed = 0.7
 
@@ -38,8 +37,8 @@ export default class Player {
     }
 
     // get movement vector, local to player
-    const grav = 1
-    let moveVec = new THREE.Vector3(0, -grav * delta, movAmt * delta)
+    const grav = 0.01
+    let moveVec = new THREE.Vector3(0, -grav, movAmt * delta)
 
     // apply movement
     this.raycastMove(moveVec)
@@ -67,13 +66,11 @@ export default class Player {
     this.modelObj.rotateY(rotAmt * delta)
   }
 
-
   // move by 'moveVec', accounting for obstacles and terrain
   // TODO: maybe filter on certain types of objects, or colliders of objects
-  // TODO: this prevents player from going off of edges
   raycastMove(moveVec) {
     // how high the player is off the ground
-    const groundOffsetVec = new THREE.Vector3(0, 0.05, 0)
+    const groundOffsetVec = new THREE.Vector3(0, 0.1, 0)
 
     // duplicate move vector, normalize
     let vec = new THREE.Vector3()
@@ -94,10 +91,20 @@ export default class Player {
       const firstHit = hits[0]
       // add offset from ground
       firstHit.point.add(groundOffsetVec)
+      // if first hit is farther than length of original move vec, use original move vec
+      if (this.modelObj.position.distanceTo(firstHit.point) > moveVec.length()) {
+        this.modelObj.translateY(moveVec.y)
+        this.modelObj.translateZ(moveVec.z)
+      }
       // move to hit point
       this.modelObj.position.setX(firstHit.point.x)
       this.modelObj.position.setY(firstHit.point.y)
       this.modelObj.position.setZ(firstHit.point.z)
+    }
+    // move by original vec
+    else {
+      this.modelObj.translateY(moveVec.y)
+      this.modelObj.translateZ(moveVec.z)
     }
   }
 
