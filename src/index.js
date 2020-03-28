@@ -22,6 +22,7 @@ const intensity = 1
 const light = new THREE.DirectionalLight(color, intensity)
 light.position.set(0, 30, 0)
 light.target.position.set(-5, 0, 0)
+scene.background = new THREE.Color(0x40afff)
 scene.add(light)
 scene.add(light.target)
 

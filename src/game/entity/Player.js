@@ -24,8 +24,8 @@ export default class Player {
   // TODO: maybe split this into two methods
   move(delta, keysDown) {
 
-    const rotRate = 1
-    const speed = 1
+    const rotRate = 1.5
+    const speed = 0.7
 
     // get movement
     const movementKeys = [83, 87]
@@ -37,8 +37,12 @@ export default class Player {
       }
     }
 
+    // get movement vector, local to player
+    const grav = 1
+    let moveVec = new THREE.Vector3(0, -grav * delta, movAmt * delta)
+
     // apply movement
-    this.modelObj.translateZ(movAmt * delta)
+    this.raycastMove(moveVec)
 
     // get rotation
     const rotationKeys = [65, 68]
@@ -61,9 +65,40 @@ export default class Player {
 
     // apply rotation
     this.modelObj.rotateY(rotAmt * delta)
+  }
 
 
+  // move by 'moveVec', accounting for obstacles and terrain
+  // TODO: maybe filter on certain types of objects, or colliders of objects
+  // TODO: this prevents player from going off of edges
+  raycastMove(moveVec) {
+    // how high the player is off the ground
+    const groundOffsetVec = new THREE.Vector3(0, 0.05, 0)
 
+    // duplicate move vector, normalize
+    let vec = new THREE.Vector3()
+    vec.copy(moveVec)
+    vec.normalize()
+
+    // convert from local to world vector for raycast
+    let rotMatrix = new THREE.Matrix4()
+    rotMatrix.extractRotation(this.modelObj.matrix)
+    vec.applyMatrix4(rotMatrix)
+
+    // create raycast
+    const raycaster = new THREE.Raycaster(this.modelObj.position, vec)
+    const hits = raycaster.intersectObjects(this.scene.children, true)
+
+    // if raycast hit something, move to that position
+    if (hits.length > 0) {
+      const firstHit = hits[0]
+      // add offset from ground
+      firstHit.point.add(groundOffsetVec)
+      // move to hit point
+      this.modelObj.position.setX(firstHit.point.x)
+      this.modelObj.position.setY(firstHit.point.y)
+      this.modelObj.position.setZ(firstHit.point.z)
+    }
   }
 
   // puts the camera behind the player on the -z axis
