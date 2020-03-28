@@ -7,8 +7,13 @@ import cow from '../../obj/cow.obj'
 import cowMtl from '../../obj/cow.mtl'
 import landscape from '../../obj/landscape.obj'
 import landscapeMtl from '../../obj/landscape.mtl'
+import bushyTree from '../../obj/bushy_tree.obj'
+import bushyTreeMtl from '../../obj/bushy_tree.mtl'
+import boulder from '../../obj/boulder.obj'
+import boulderMtl from '../../obj/boulder.mtl'
 import player from '../../obj/player.obj'
 import playerMtl from '../../obj/player.mtl'
+
 
 export default class ResLoader {
 
@@ -19,6 +24,8 @@ export default class ResLoader {
     const allRes = {
       cow: [cow, cowMtl],
       landscape: [landscape, landscapeMtl],
+      bushyTree: [bushyTree, bushyTreeMtl],
+      boulder: [boulder, boulderMtl],
       player: [player, playerMtl]
     }
 

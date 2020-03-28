@@ -1,5 +1,5 @@
-import * as THREE from 'three'
 import ResLoader from './util/ResLoader.js'
+import RandomLandscapeGen from './level/RandomLandscapeGen.js'
 import InputHandler from './util/InputHandler.js'
 
 import Player from './entity/Player.js'
@@ -32,7 +32,13 @@ export default class Game {
 
     this.scene.add(this.cow)
     this.scene.add(this.cow2)
-    this.scene.add(this.loadedRes.landscape.clone(true))
+
+    this.terrain = this.loadedRes.landscape.clone(true)
+    this.scene.add(this.terrain)
+    new RandomLandscapeGen(
+      [this.loadedRes.bushyTree, this.loadedRes.boulder],
+      this.terrain, this.scene
+    ).gen()
 
     this.player = new Player(this.scene, this.camera, this.loadedRes.player)
     this.player.spawn(0, 0.1, 0)
